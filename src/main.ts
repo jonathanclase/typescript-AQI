@@ -10,14 +10,10 @@ namespace main{
 
             for(const measurement of pollutantMeasurements){
                 let pollutantResult = new AQICalculations.pollutantIndex(measurement);
-                pollutantResult.calculatePollutantIndex();
                 pollutantResults.push(pollutantResult);
             }
         
-            let AQIResults = new AQICalculations.AQICalculations(pollutantResults);
-            AQIResults.calculateResponsiblePollutant();
-            AQIResults.createAQIDetails();
-        
+            let AQIResults = new AQICalculations.AQICalculations(pollutantResults);       
             let AQIReport = new output.formatAQIReport(pollutantResults, AQIResults);
             let formattedAQIReport:types.formattedAQIResults = AQIReport.getformattedAQIReport();
             

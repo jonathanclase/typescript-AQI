@@ -248,6 +248,7 @@ export namespace AQICalculations{
         constructor(pollutantMeasurement:types.pollutantMeasurementValues){
             this._measurement = pollutantMeasurement.pollutantValue;
             this._pollutant = pollutantMeasurement.pollutant;
+            this.calculatePollutantIndex();
         }
 
         public getPollutant():string{
@@ -273,7 +274,7 @@ export namespace AQICalculations{
                 }
             }
             else{
-                throw new Error("Cannot derive sensitive groups before the pollutant AQI has been calculated".);
+                throw new Error("Cannot derive sensitive groups before the pollutant AQI has been calculated.");
             }
         }
 
@@ -293,7 +294,7 @@ export namespace AQICalculations{
         }
 
         //TAD p. 13, "II. CALCULATING THE AQI"
-        public calculatePollutantIndex():void{
+        private calculatePollutantIndex():void{
             let truncateToDecimalValue:number = this.getPollutantTruncateToDecaimalValueByPollutant(this._pollutant);
             let truncatedDecimalValue:number = this.truncateDecimalValueToPlaces(this._measurement, truncateToDecimalValue);
 
@@ -357,6 +358,8 @@ export namespace AQICalculations{
 
         constructor(pollutantIndexes:AQICalculations.pollutantIndex[]){
             this._pollutantIndexes = pollutantIndexes;
+            this.calculateResponsiblePollutant();
+            this.createAQIDetails();
         }
 
         public getSensitiveGroupsList():string[]{
@@ -391,14 +394,14 @@ export namespace AQICalculations{
             return this._AQICategoryInfo.category.colorHexidecimal;
         }
 
-        public calculateResponsiblePollutant():void{ //Move to AQI class
+        private calculateResponsiblePollutant():void{ //Move to AQI class
             let responsiblePollutant:AQICalculations.pollutantIndex = this.sortAQIIndexes(this._pollutantIndexes)[0];
 
             this._responsiblePollutant = responsiblePollutant.getPollutant();
             this._responsiblePollutantIndex = responsiblePollutant.getPollutantAQIValue();
         }
 
-        public createAQIDetails():void{
+        private createAQIDetails():void{
             this._AQICategoryInfo = this.findAQIBreakpointforCritcalPollutant()
             this._sensitiveGroups = this.createSensitiveGroupsList();
         }
